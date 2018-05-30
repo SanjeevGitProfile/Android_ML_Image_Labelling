@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private Button signOutButton;
     private Button signInButton;
+    private Button cameraButton;
     private TextView textView;
 
     private static int SIGN_IN_CODE = 123;
@@ -42,10 +43,12 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         signOutButton = findViewById(R.id.signout_button);
         signInButton = findViewById(R.id.signin_button);
+        cameraButton = findViewById(R.id.camera_button);
         textView = findViewById(R.id.displayText);
 
         signOutButton.setOnClickListener(signOutListener);
         signInButton.setOnClickListener(signInListener);
+        cameraButton.setOnClickListener(cameraListener);
 
         currentUser = mAuth.getCurrentUser();
         validateUser();
@@ -63,6 +66,13 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
             mAuth.signOut();
             textView.setText("You are signed out");
+        }
+    };
+
+    private View.OnClickListener cameraListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+                        
         }
     };
 
