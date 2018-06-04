@@ -19,7 +19,6 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
     private SurfaceHolder mHolder;
     private Activity mActivity;
 
-
     public CameraSurfaceView(Context context, Activity activity, Camera camera)
     {
         super(context);
@@ -30,14 +29,13 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         mHolder.addCallback(this);
 
-/*        setFocusable(true);
- *       setFocusableInTouchMode(true);
- */
+        setFocusable(true);
+        setFocusableInTouchMode(true);
     }
 
     public void surfaceCreated(SurfaceHolder surfaceHolder){
 
-/*        Camera.CameraInfo info = new Camera.CameraInfo();
+        Camera.CameraInfo info = new Camera.CameraInfo();
         Camera.getCameraInfo(Camera.CameraInfo.CAMERA_FACING_BACK, info);
 
         int rotation = mActivity.getWindowManager().getDefaultDisplay().getRotation();
@@ -50,7 +48,7 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
             case Surface.ROTATION_270: degrees = 270; break;
         }
         mCamera.setDisplayOrientation((info.orientation - degrees +360) % 360);
-*/
+
         try
         {
             mCamera.setPreviewDisplay(mHolder);
@@ -63,7 +61,16 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
     }
 
     public void surfaceChanged(SurfaceHolder surfaceHolder, int format, int width, int height){
- /*       Camera.Parameters params = mCamera.getParameters();
+        if (mHolder.getSurface() == null)
+            return;
+
+        try{
+            mCamera.stopPreview();
+        } catch (Exception e){
+            Log.d(DEBUG_TAG,"Tried to stop a non-existent preview" + e.getMessage());
+        }
+
+        Camera.Parameters params = mCamera.getParameters();
         List<Camera.Size> prevSizes = params.getSupportedPreviewSizes();
         for(Camera.Size s: prevSizes)
         {
@@ -80,13 +87,6 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
         }
 
         mCamera.setParameters(params);
-*/
-        if (mHolder.getSurface() == null)
-            return;
-        try{
-            mCamera.stopPreview();
-        } catch (Exception e){
-        }
 
         try{
             mCamera.setPreviewDisplay(mHolder);
