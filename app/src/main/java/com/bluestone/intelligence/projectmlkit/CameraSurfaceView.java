@@ -14,28 +14,30 @@ import java.util.List;
 
 public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Callback{
 
-    public static final String DEBUG_TAG = "DisplayView Log";
-    Camera mCamera;
-    SurfaceHolder mHolder;
-    Activity mActivity;
+    public static final String DEBUG_TAG = "CameraSurfaceView Log";
+    private Camera mCamera;
+    private SurfaceHolder mHolder;
+    private Activity mActivity;
 
-    public CameraSurfaceView(Context context, Activity activity)
+
+    public CameraSurfaceView(Context context, Activity activity, Camera camera)
     {
         super(context);
 
         mActivity = activity;
+        mCamera = camera;
         mHolder = getHolder();
-        //mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         mHolder.addCallback(this);
 
-        setFocusable(true);
-        setFocusableInTouchMode(true);
+/*        setFocusable(true);
+ *       setFocusableInTouchMode(true);
+ */
     }
 
     public void surfaceCreated(SurfaceHolder surfaceHolder){
-        mCamera = Camera.open();
 
-        Camera.CameraInfo info = new Camera.CameraInfo();
+/*        Camera.CameraInfo info = new Camera.CameraInfo();
         Camera.getCameraInfo(Camera.CameraInfo.CAMERA_FACING_BACK, info);
 
         int rotation = mActivity.getWindowManager().getDefaultDisplay().getRotation();
@@ -48,10 +50,11 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
             case Surface.ROTATION_270: degrees = 270; break;
         }
         mCamera.setDisplayOrientation((info.orientation - degrees +360) % 360);
-
+*/
         try
         {
             mCamera.setPreviewDisplay(mHolder);
+            mCamera.startPreview();
         }
         catch (IOException e)
         {
@@ -60,7 +63,7 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
     }
 
     public void surfaceChanged(SurfaceHolder surfaceHolder, int format, int width, int height){
-        Camera.Parameters params = mCamera.getParameters();
+ /*       Camera.Parameters params = mCamera.getParameters();
         List<Camera.Size> prevSizes = params.getSupportedPreviewSizes();
         for(Camera.Size s: prevSizes)
         {
@@ -73,12 +76,25 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
         if (params.getSupportedFocusModes().contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
             params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
         } else {
-            /* Choose another supported mode
-             */
+            // Choose another supported mode
         }
 
         mCamera.setParameters(params);
-        mCamera.startPreview();
+*/
+        if (mHolder.getSurface() == null)
+            return;
+        try{
+            mCamera.stopPreview();
+        } catch (Exception e){
+        }
+
+        try{
+            mCamera.setPreviewDisplay(mHolder);
+            mCamera.startPreview();
+        }
+        catch (Exception e){
+            Log.d(DEBUG_TAG,"Camera preview failed");
+        }
     }
 
     public void surfaceDestroyed(SurfaceHolder holder)
@@ -86,6 +102,7 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
         mCamera.stopPreview();
         mCamera.release();
     }
+
 
     public boolean onTouchEvent(MotionEvent motionEvent)
     {
