@@ -103,7 +103,6 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
         mCamera.release();
     }
 
-
     public boolean onTouchEvent(MotionEvent motionEvent)
     {
         switch(motionEvent.getAction() & MotionEvent.ACTION_MASK)
